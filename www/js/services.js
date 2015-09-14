@@ -1,6 +1,6 @@
 angular.module('starter.services', [])
 
-.factory('Chats', function() {
+.factory('Chats', function($http) {
   // Might use a resource here that returns a JSON array
 
   // Some fake testing data
@@ -31,6 +31,8 @@ angular.module('starter.services', [])
     face: 'https://pbs.twimg.com/profile_images/578237281384841216/R3ae1n61.png'
   }];
 
+  var friends = [];
+
   return {
     all: function() {
       return chats;
@@ -45,6 +47,13 @@ angular.module('starter.services', [])
         }
       }
       return null;
+    },
+    populateFriendsList: function() {
+        $http.get('http://teamulator.herokuapp.com/users/ran/friends').
+            then(function(response) {
+                friends = response.data;
+            }, function(response) {
+        });
     }
   };
 });
