@@ -1,6 +1,31 @@
 angular.module('starter.controllers', [])
 
-.controller('LoginCtrl', function($scope) {})
+.controller('LoginCtrl', function($scope, DBUtilities) {
+      DBUtilities.setUser('volo');
+      $scope.settings = {
+        userName: DBUtilities.getUser()
+      };
+      /*
+      // Check if user is loged in
+      var userName = 'ran';
+
+      var userName = LocalStorage.getUser();
+
+      if (userName){
+        $scope.settings = {
+          userName: true
+        };
+        // move to home tab
+      } else {
+        // load login screen
+        // Get username and password
+        // send them to server
+        // save user localy
+        LocalStorage.setUser(userName);
+      }
+      */
+
+    })
 
 .controller('FriendsCtrl', function($scope, DBUtilities, $ionicPopup) {
   // With the new view caching in Ionic, Controllers are only called
@@ -36,8 +61,9 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('AddPlayerCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
+.controller('AddPlayerCtrl', function($scope, DBUtilities) {
+  $scope.addPlayer = function() {
+    var player = document.getElementById("playerName").value;
+    DBUtilities.addPlayer(player);
   };
 });
