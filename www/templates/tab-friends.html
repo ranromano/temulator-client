@@ -1,5 +1,9 @@
-<ion-view view-title="Friends">
+<ion-view view-title="Friends" ng-controller="FriendsCtrl">
   <ion-content>
+    <ion-refresher
+            pulling-text="Pull to refresh..."
+            on-refresh="doRefresh()">
+    </ion-refresher>
     <ion-list>
       <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="friend in friends" type="item-text-wrap">
         <ion-checkbox ng-model="friend.isChecked">

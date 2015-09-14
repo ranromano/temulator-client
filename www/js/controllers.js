@@ -37,6 +37,11 @@ angular.module('starter.controllers', [])
   //});
 
   $scope.friends = DBUtilities.getFriendsList();
+  $scope.doRefresh = function() {
+      DBUtilities.populateFriendsList();
+      $scope.friends = DBUtilities.getFriendsList();
+      $scope.$broadcast('scroll.refreshComplete');
+  };
   $scope.editPlayer = function(friend) {
     DBUtilities.editPlayer(friend);
   };
