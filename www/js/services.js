@@ -1,6 +1,6 @@
 angular.module('starter.services', [])
 
-.factory('Chats', function($http) {
+.factory('DBUtilities', function($http) {
   // Might use a resource here that returns a JSON array
 
   // Some fake testing data
@@ -56,4 +56,5 @@ angular.module('starter.services', [])
         });
     }
   };
+
 });
