@@ -2,7 +2,7 @@ angular.module('starter.controllers', [])
 
 .controller('LoginCtrl', function($scope) {})
 
-.controller('FriendsCtrl', function($scope, DBUtilities) {
+.controller('FriendsCtrl', function($scope, DBUtilities, $ionicPopup) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -12,13 +12,28 @@ angular.module('starter.controllers', [])
   //});
 
   $scope.friends = DBUtilities.getFriendsList();
-  $scope.remove = function(chat) {
-    DBUtilities.remove(chat);
+  $scope.editPlayer = function(friend) {
+    DBUtilities.editPlayer(friend);
   };
-})
-
-.controller('EditPlayerCtrl', function($scope, $stateParams, DBUtilities) {
-  $scope.chat = DBUtilities.get($stateParams.chatId);
+  $scope.teamulate = function(friends) {
+      var selectedList = [];
+    angular.forEach(friends, function(friend) {
+        if (friend.isChecked) {
+            selectedList.push(friend);
+        }
+    });
+    var confirmPopup = $ionicPopup.confirm({
+        title: selectedList.length.toString() + ' players were selected',
+        template: 'select the number of teams'
+    });
+    confirmPopup.then(function(res) {
+        if(res) {
+            console.log('You are sure');
+        } else {
+            console.log('You are not sure');
+        }
+    });
+  };
 })
 
 .controller('AddPlayerCtrl', function($scope) {

@@ -71,18 +71,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
           controller: 'FriendsCtrl'
         }
       }
-    })
-    .state('tab.editPlayer', {
-      url: '/friends/editPlayer',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
-        }
-      }
     });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/login');
-
 });
