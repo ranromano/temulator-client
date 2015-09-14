@@ -11,14 +11,14 @@ angular.module('starter.controllers', [])
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
-  $scope.chats = DBUtilities.all();
+  $scope.friends = DBUtilities.getFriendsList();
   $scope.remove = function(chat) {
     DBUtilities.remove(chat);
   };
 })
 
 .controller('EditPlayerCtrl', function($scope, $stateParams, DBUtilities) {
-  $scope.chat = Chats.get($stateParams.chatId);
+  $scope.chat = DBUtilities.get($stateParams.chatId);
 })
 
 .controller('AddPlayerCtrl', function($scope) {

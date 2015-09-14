@@ -54,6 +54,9 @@ angular.module('starter.services', [])
                 friends = response.data;
             }, function(response) {
         });
+    },
+    getFriendsList: function() {
+       return friends;
     }
   };
 
