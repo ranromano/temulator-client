@@ -27,7 +27,7 @@ angular.module('starter.controllers', [])
 
     })
 
-.controller('FriendsCtrl', function($scope, DBUtilities, $ionicPopup) {
+.controller('FriendsCtrl', function($scope, DBUtilities, $ionicPopup, $location) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -52,16 +52,30 @@ angular.module('starter.controllers', [])
             selectedList.push(friend);
         }
     });
-    var confirmPopup = $ionicPopup.confirm({
+    var numberOfTeams;
+    var NumberOfteamsSelectionPopup = $ionicPopup.show({
         title: selectedList.length.toString() + ' players were selected',
-        template: 'select the number of teams'
+        subTitle: 'select the number of team',
+        scope: $scope,
+        buttons: [
+            {
+                text: '<b>3</b>',
+                type: 'button-positive',
+                onTap: function(e) {
+                  numberOfTeams = 3
+                }
+            },
+            {
+                text: '<b>4</b>',
+                type: 'button-positive',
+                onTap: function(e) {
+                  numberOfTeams = 4
+                }
+            }
+        ]
     });
-    confirmPopup.then(function(res) {
-        if(res) {
-            console.log('You are sure');
-        } else {
-            console.log('You are not sure');
-        }
+    NumberOfteamsSelectionPopup.then(function(res) {
+        $location.path('/teams')
     });
   };
 })
@@ -71,4 +85,10 @@ angular.module('starter.controllers', [])
     var player = document.getElementById("playerName").value;
     DBUtilities.addPlayer(player);
   };
+})
+
+.controller('TeamsCtrl', function($scope, DBUtilities) {
+    $scope.teams = function() {
+        return ;
+    };
 });
