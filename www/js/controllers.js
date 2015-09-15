@@ -68,6 +68,10 @@ angular.module('starter.controllers', [])
     });
     NumberOfteamsSelectionPopup.then(function(res) {
         TeamulateUtilities.teamulate(selectedList, numberOfTeams);
+        var alertPopup = $ionicPopup.alert({
+            title: 'Check out who is against who in the teams tab',
+            template: 'Let the best team win!'
+        });
     });
   };
 })

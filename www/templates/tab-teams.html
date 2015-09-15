@@ -1,13 +1,18 @@
 <ion-view view-title="Teams">
     <ion-content>
+        <div class="bar bar-header bar-light" ng-hide="teams.length > 0">
+            <h1 class="title">Choose friends in the 'friends' tab and TEAMULATE!</h1>
+        </div>
         <ion-list>
-            <ion-item class="list card" ng-repeat="team in teams" type="item-text-wrap">
+            <ion-item class="list card"  ng-repeat="team in teams" type="item-text-wrap" >
                 <div class="item item-divider">Team's Players:</div>
                 <div class="item item-body" ng-repeat="player in team.teamMembers">
                     <div>
                          <b>{{player.username}}</b>
+                         <p>{{player.rank}}</p>
                     </div>
                 </div>
+                <div class="item item-divider">Team Rank: {{team.teamRank}}</div>
             </ion-item>
         </ion-list>
     </ion-content>
