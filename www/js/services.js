@@ -30,15 +30,26 @@ angular.module('starter.services', [])
 			});
   };
 
+  function updateRank(user, rank){
+    $http.put('http://teamulator.herokuapp.com/users/'+ user ,{rank: rank}).
+        then(function(response) {
+          console.log("Logger: updated", user, " rank");
+        }, function(response) {
+          console.log("ERROR: Could not update", user, " rank");
+        });
+  };
+
+
   return {
     populateFriendsList: function() {
         updateFriendsList();
     },
 
-    addPlayer: function(friendName){
+    addPlayer: function(friendName, rank){
       $http.post('http://teamulator.herokuapp.com/users/'+ userName + '/friends',{friend: friendName}).
           then(function(response) {
             console.log("Logger: ", friendName, "added to " + userName + " friends list");
+            updateRank(friendName, rank);
             updateFriendsList();
           }, function(response) {
             console.log("ERROR: Could not add", friendName, "to " + userName + " friends list");
@@ -62,7 +73,10 @@ angular.module('starter.services', [])
     
     editPlayer: function(friend) {
 
+    },
+
+    addRank: function(user, rank) {
+      updateRank(user, rank);
     }
   };
-
 });

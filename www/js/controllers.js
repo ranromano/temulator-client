@@ -83,7 +83,8 @@ angular.module('starter.controllers', [])
 .controller('AddPlayerCtrl', function($scope, DBUtilities) {
   $scope.addPlayer = function() {
     var player = document.getElementById("playerName").value;
-    DBUtilities.addPlayer(player);
+    var rank = document.getElementById("playerRank").value;
+    DBUtilities.addPlayer(player, rank);
   };
 })
 
