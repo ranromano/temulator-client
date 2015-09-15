@@ -112,7 +112,7 @@ angular.module('starter.services', [])
                     teams.push({teamRank: 0, teamMembers: []})
                 }
 
-                players.sort(comparePlayer);
+                players.sort(comparePlayer).then();
 
                 var teamsPointer = 0;
 

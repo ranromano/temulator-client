@@ -45,26 +45,20 @@ angular.module('starter.controllers', [])
         }
     });
     var numberOfTeams;
+    var numberOfTeamsButtons = [] ;
+    for (var i = 2; i <= selectedList.length / 2; i++) {
+        numberOfTeamsButtons.push({
+            text: i.toString(),
+            type: 'button-positive',
+            onTap: function(e) {
+                numberOfTeams = parseInt(e.path[0].innerText);
+            }
+        });
+    }
     var NumberOfteamsSelectionPopup = $ionicPopup.show({
         title: selectedList.length.toString() + ' players were selected',
-        subTitle: 'select the number of team',
-        scope: $scope,
-        buttons: [
-            {
-                text: '<b>3</b>',
-                type: 'button-positive',
-                onTap: function(e) {
-                  numberOfTeams = 3
-                }
-            },
-            {
-                text: '<b>4</b>',
-                type: 'button-positive',
-                onTap: function(e) {
-                  numberOfTeams = 4
-                }
-            }
-        ]
+        subTitle: 'select the number of teams',
+        buttons: numberOfTeamsButtons
     });
     NumberOfteamsSelectionPopup.then(function(res) {
         TeamulateUtilities.teamulate(selectedList, numberOfTeams);
