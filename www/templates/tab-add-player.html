@@ -4,8 +4,12 @@
       <label class="item item-input">
         <input type="text" placeholder="Username" id="playerName" ng-model="data.username">
       </label>
+      <label class="item item-input">
+        <input min="1" max="5" step="1" value="3" id="playerRank" placeholder="Rank" type="number" />
+      </label>
+
     </div>
-    <button class="button button-block button-calm" ng-click="addPlayer()">
+    <button class="button button-block button-balanced" ng-click="addPlayer()">
     Add Player</button>
   </ion-content>
 </ion-view>
