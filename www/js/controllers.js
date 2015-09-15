@@ -47,6 +47,7 @@ angular.module('starter.controllers', [])
     var numberOfTeams;
     var numberOfTeamsButtons = [] ;
     for (var i = 2; i <= selectedList.length / 2; i++) {
+        if ((selectedList.length % i == 0)) {
         numberOfTeamsButtons.push({
             text: i.toString(),
             type: 'button-positive',
@@ -54,19 +55,26 @@ angular.module('starter.controllers', [])
                 numberOfTeams = parseInt(e.path[0].innerText);
             }
         });
+    };
     }
-    var NumberOfteamsSelectionPopup = $ionicPopup.show({
-        title: selectedList.length.toString() + ' players were selected',
-        subTitle: 'select the number of teams',
-        buttons: numberOfTeamsButtons
-    });
-    NumberOfteamsSelectionPopup.then(function(res) {
-        TeamulateUtilities.teamulate(selectedList, numberOfTeams);
+    if (numberOfTeamsButtons.length == 0) {
         var alertPopup = $ionicPopup.alert({
-            title: 'Check out who is against who in the teams tab',
-            template: 'Let the best team win!'
+            title: 'Choose a number of players that can be divided into even teams'
         });
-    });
+    }  else {
+        var NumberOfteamsSelectionPopup = $ionicPopup.show({
+            title: selectedList.length.toString() + ' players were selected',
+            subTitle: 'select the number of teams',
+            buttons: numberOfTeamsButtons
+        });
+        NumberOfteamsSelectionPopup.then(function(res) {
+            TeamulateUtilities.teamulate(selectedList, numberOfTeams);
+            var alertPopup = $ionicPopup.alert({
+                title: 'Check out who is against who in the teams tab',
+                template: 'Let the best team win!'
+            });
+        });
+    }
   };
 })
 
