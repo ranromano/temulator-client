@@ -72,6 +72,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     })
 
   .state('tab.teams', {
+          cache: false,
           url: '/teams',
           views: {
               'tab-teams': {

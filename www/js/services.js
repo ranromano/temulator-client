@@ -108,11 +108,12 @@ angular.module('starter.services', [])
 
         return {
             teamulate: function (players, numberOfTeams) {
+                teams = [];
                 for (var i = 0; i < numberOfTeams; i++) {
                     teams.push({teamRank: 0, teamMembers: []})
                 }
 
-                players.sort(comparePlayer).then();
+                players.sort(comparePlayer);
 
                 var teamsPointer = 0;
 
