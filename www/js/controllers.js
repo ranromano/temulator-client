@@ -27,7 +27,7 @@ angular.module('starter.controllers', [])
 
     })
 
-.controller('FriendsCtrl', function($scope, DBUtilities, $ionicPopup, $location) {
+.controller('FriendsCtrl', function($scope, DBUtilities, $ionicPopup, TeamulateUtilities) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -75,7 +75,7 @@ angular.module('starter.controllers', [])
         ]
     });
     NumberOfteamsSelectionPopup.then(function(res) {
-        $location.path('/teams')
+        TeamulateUtilities.teamulate(selectedList, numberOfTeams);
     });
   };
 })
@@ -87,8 +87,6 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('TeamsCtrl', function($scope, DBUtilities) {
-    $scope.teams = function() {
-        return ;
-    };
+.controller('TeamsCtrl', function($scope, TeamulateUtilities) {
+    $scope.teams = TeamulateUtilities.getTeams();
 });

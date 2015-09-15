@@ -73,15 +73,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     })
 
-  .state('tabs.teams', {
+  .state('tab.teams', {
           url: '/teams',
           views: {
-              'teams': {
-                  templateUrl: 'templates/teams.html',
+              'tab-teams': {
+                  templateUrl: 'templates/tab-teams.html',
                   controller: 'TeamsCtrl'
               }
           }
-  });
+  })
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/login');

@@ -2,10 +2,9 @@
     <ion-content>
         <ion-list>
             <ion-item class="list card" ng-repeat="team in teams" type="item-text-wrap">
-                <div class="item item-divider">Recent Updates</div>
-                <div class="item item-body">
+                <div class="item item-divider">Team's Players:</div>
+                <div class="item item-body" ng-repeat="player in team.teamMembers">
                     <div>
-                        There is a fire in <b>sector 3</b>
                     </div>
                 </div>
             </ion-item>
@@ -13,8 +12,7 @@
     </ion-content>
 </ion-view>
 
-.
-...
+
 
 
 
