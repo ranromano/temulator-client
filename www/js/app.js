@@ -33,8 +33,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-
-
   // setup an abstract state for the tabs directive
     .state('tab', {
       url: '/tab',
@@ -73,7 +71,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     })
 
-  .state('tabs.teams', {
+  .state('tab.teams', {
           url: '/teams',
           views: {
               'teams': {
