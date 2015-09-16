@@ -1,25 +1,32 @@
 angular.module('starter.controllers', [])
 
-.controller('LoginCtrl', function($scope, DBUtilities) {
-    // Check if user is logged in
-    var user = DBUtilities.getUserName();
+.controller('SigninCtrl', function($scope, DBUtilities, $state) {
 
-    if (user){
-        // 1. Say hello user
-        // 2. move to home screen
-    } else {
-        // Show login screen
+    // Get user name from local storage
+    $scope.user = DBUtilities.getUserName();
+
+    // Check if user is logged in
+    if ($scope.user) {
+        DBUtilities.populateFriendsList();
+        $state.go('tab.friends');
     }
 
     $scope.signin = function() {
-        var user = document.getElementById("usernameSignin").value;
+        var username = document.getElementById("usernameSignin").value;
         var password = document.getElementById("passwordSignin").value;
-        DBUtilities.userSignIn(user, password);
+
+        DBUtilities.userSignIn(username, password);
+        // if works - go to
+                $state.go('tab.friends');
+        // else
+        // show popup telling username already exist
+        // $scope.user = DBUtilities.getUserName();
     };
 
 })
 
-.controller('FriendsCtrl', function($scope, DBUtilities, $ionicPopup, TeamulateUtilities) {
+
+.controller('FriendsCtrl', function($scope, DBUtilities, $ionicPopup, TeamulateUtilities, $state) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -28,16 +35,21 @@ angular.module('starter.controllers', [])
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
-  $scope.friends = DBUtilities.getFriendsList();
-  $scope.doRefresh = function() {
+
+    $scope.friends = DBUtilities.getFriendsList();
+    $scope.doRefresh = function() {
       DBUtilities.populateFriendsList();
       $scope.friends = DBUtilities.getFriendsList();
       $scope.$broadcast('scroll.refreshComplete');
-  };
-  $scope.editPlayer = function(friend) {
-    DBUtilities.editPlayer(friend);
-  };
-  $scope.teamulate = function(friends) {
+    };
+    $scope.$on('friendsListUpdated', function () {
+        console.log("Logger: friendsListUpdated");
+        $scope.friends = DBUtilities.getFriendsList();
+    });
+    $scope.editPlayer = function(friend) {
+        DBUtilities.editPlayer(friend);
+    };
+    $scope.teamulate = function(friends) {
       var selectedList = [];
     angular.forEach(friends, function(friend) {
         if (friend.isChecked) {
@@ -59,7 +71,7 @@ angular.module('starter.controllers', [])
     }
     if (numberOfTeamsButtons.length == 0) {
         var alertPopup = $ionicPopup.alert({
-            title: 'Choose a number of players that can be divided into even teams'
+            title: 'Choose a number of players that can be divided into even teams (4 or more)'
         });
     }  else {
         var NumberOfteamsSelectionPopup = $ionicPopup.show({
@@ -73,9 +85,12 @@ angular.module('starter.controllers', [])
                 title: 'Check out who is against who in the teams tab',
                 template: 'Let the best team win!'
             });
+            alertPopup.then(function(){
+                $state.go('tab.teams');
+            })
         });
     }
-  };
+    };
 })
 
 .controller('AddPlayerCtrl', function($scope, DBUtilities) {
@@ -88,4 +103,13 @@ angular.module('starter.controllers', [])
 
 .controller('TeamsCtrl', function($scope, TeamulateUtilities) {
     $scope.teams = TeamulateUtilities.getTeams();
+})
+
+.controller('SignoutCtrl', function($scope, DBUtilities, $state) {
+    $scope.signout = function(){
+        // Clear user data from local storage
+        DBUtilities.deleteUserData();
+
+        $state.go('signin');
+    }
 });

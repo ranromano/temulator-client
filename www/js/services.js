@@ -1,6 +1,6 @@
 angular.module('starter.services', [])
 
-.factory('DBUtilities', function($http, $window) {
+.factory('DBUtilities', function($http, $window, $rootScope) {
         var userName = getFromLocalStorage('userName', null);
 
         // Local storage functions
@@ -45,17 +45,20 @@ angular.module('starter.services', [])
             $http.put('http://teamulator.herokuapp.com/users/' + user, {rank: rank}).
                 then(function (response) {
                     console.log("Logger: updated", user, " rank");
+                    updateFriendsList();
                 }, function (response) {
                     console.log("ERROR: Could not update", user, " rank");
                 });
         }
 
         function addFriend(friendName, rank) {
+            // TODO(gal): Check that friends name does not exist in friends
+
+            // Add friend to list in DB
             $http.post('http://teamulator.herokuapp.com/users/' + userName + '/friends', {friend: friendName}).
                 then(function (response) {
                     console.log("Logger: ", friendName, "added to " + userName + " friends list");
                     updateRank(friendName, rank);
-                    $scope.doRefresh();
                 }, function (response) {
                     console.log("ERROR: Could not add", friendName, "to " + userName + " friends list");
                 });
@@ -64,31 +67,40 @@ angular.module('starter.services', [])
 
         function setFriendsList(list) {
             setObjectInLocalStorage('friendsList', list);
+            $rootScope.$broadcast('friendsListUpdated');
         }
 
         function getFriendsList() {
             return getObjectFromLocalStorage('friendsList');
         }
 
+        function userSignIn(user, password) {
+            $http.post('http://teamulator.herokuapp.com/signup/', {username: user, password: password}).
+                then(function (response) {
+                    console.log("Logger: ", user, "added to DB");
+                    setUserName(user);
+                    updateFriendsList();
+                }, function (response) {
+                    console.log("ERROR: Could not add", user, "to DB");
+                    // TODO(gal): add popup telling user username is taken please choose another
+                });
+        }
+
         return {
             setUserName: setUserName,
             getUserName: getUserName,
             getFriendsList: getFriendsList,
+            deleteUserData: function(){
+                $window.localStorage.clear();
+                updateFriendsList();
+            },
+
             populateFriendsList: updateFriendsList,
             addFriend: addFriend,
             addPlayerRank: updateRank,
             editPlayer: function (playerName) {
             },
-            userSignIn: function (user, password) {
-                $http.post('http://teamulator.herokuapp.com/signup/', {username: user, password: password}).
-                    then(function (response) {
-                        console.log("Logger: ", user, "added to DB");
-                        setUserName(user);
-                        updateFriendsList();
-                    }, function (response) {
-                        console.log("ERROR: Could not add", user, "to DB");
-                    });
-            }
+            userSignIn: userSignIn
         }
     })
 
