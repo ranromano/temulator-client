@@ -62,6 +62,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         }
       }
     })
+      .state('tab.friends-edit', {
+          url: '/friends/:userName',
+          views: {
+              'tab-friends': {
+                  templateUrl: 'templates/tab-friends-editFriend.html',
+                  controller: 'EditFriendCtrl'
+              }
+          }
+      })
 
   .state('tab.teams', {
           cache: false,

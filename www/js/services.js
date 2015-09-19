@@ -1,7 +1,9 @@
 angular.module('starter.services', [])
 
-.factory('DBUtilities', function($http, $window, $rootScope) {
+.factory('DBUtilities', function($http, $window, $rootScope, $ionicPopup, $state) {
         var userName = getFromLocalStorage('userName', null);
+
+        var friendsNames = new Set([]);
 
         // Local storage functions
         function setInLocalStorage(key, value) {
@@ -45,27 +47,62 @@ angular.module('starter.services', [])
             $http.put('http://teamulator.herokuapp.com/users/' + user, {rank: rank}).
                 then(function (response) {
                     console.log("Logger: updated", user, " rank");
-                    updateFriendsList();
                 }, function (response) {
                     console.log("ERROR: Could not update", user, " rank");
                 });
         }
 
         function addFriend(friendName, rank) {
-            // TODO(gal): Check that friends name does not exist in friends
-
-            // Add friend to list in DB
-            $http.post('http://teamulator.herokuapp.com/users/' + userName + '/friends', {friend: friendName}).
-                then(function (response) {
-                    console.log("Logger: ", friendName, "added to " + userName + " friends list");
-                    updateRank(friendName, rank);
-                }, function (response) {
-                    console.log("ERROR: Could not add", friendName, "to " + userName + " friends list");
+            // Check that friends name does not exist in friends
+            if (friendsNames.has(friendName)) {
+                console.log("ERROR: ", friendName, "already exist in friends list");
+                $ionicPopup.alert({
+                    title: 'Friend already exist'
                 });
-
+            } else {
+                // Add friend to list in DB
+                $http.post('http://teamulator.herokuapp.com/users/' + userName + '/friends', {friend: friendName}).
+                    then(function (response) {
+                        console.log("Logger: ", friendName, "added to " + userName + "'s friends list");
+                        $ionicPopup.alert({
+                            title: 'User added!'
+                        });
+                        if (rank) {
+                            updateRank(friendName, rank);
+                        }
+                        updateFriendsList();
+                    }, function (response) {
+                        console.log("ERROR: Could not add", friendName, "to " + userName + "'s friends list");
+                        $ionicPopup.alert({
+                            title: 'Error: User was not added, something went wrong :('
+                        });
+                    });
+            }
         }
 
+        function removeFriendFromFriendList(friendName){
+            $http.delete('http://teamulator.herokuapp.com/users/' + userName + '/friends', {friend: friendName}).
+                then(function (response) {
+                    console.log("Logger: ", friendName, "removed from " + userName + "'s friends list");
+                    $ionicPopup.alert({
+                        title: 'User removed'
+                    });
+                    friendsNames.delete(friendName);
+                    updateFriendsList();
+                }, function (response) {
+                    console.log("ERROR: Could not add", friendName, "to " + userName + "'s friends list");
+                    $ionicPopup.alert({
+                        title: 'Error: User was not added, something went wrong :('
+                    });
+                });
+        }
+
+
         function setFriendsList(list) {
+            friendsNames.clear();
+            for (item in list) {
+                friendsNames.add(list[item].username);
+            };
             setObjectInLocalStorage('friendsList', list);
             $rootScope.$broadcast('friendsListUpdated');
         }
@@ -75,14 +112,22 @@ angular.module('starter.services', [])
         }
 
         function userSignIn(user, password) {
+            if (!password) {
+                $ionicPopup.alert({
+                    title: 'Please enter a password'
+                });
+            }
             $http.post('http://teamulator.herokuapp.com/signup/', {username: user, password: password}).
                 then(function (response) {
                     console.log("Logger: ", user, "added to DB");
                     setUserName(user);
                     updateFriendsList();
+                    $state.go('tab.friends');
                 }, function (response) {
                     console.log("ERROR: Could not add", user, "to DB");
-                    // TODO(gal): add popup telling user username is taken please choose another
+                    $ionicPopup.alert({
+                        title: 'Username already exist, please choose another one'
+                    });
                 });
         }
 
@@ -92,15 +137,20 @@ angular.module('starter.services', [])
             getFriendsList: getFriendsList,
             deleteUserData: function(){
                 $window.localStorage.clear();
+                friendsNames.clear();
                 updateFriendsList();
+
             },
 
             populateFriendsList: updateFriendsList,
             addFriend: addFriend,
-            addPlayerRank: updateRank,
+            addPlayerRank: function(user, rank) {
+                updateRank(user, rank);
+            },
             editPlayer: function (playerName) {
             },
-            userSignIn: userSignIn
+            userSignIn: userSignIn,
+            removeFriendFromFriendList: removeFriendFromFriendList
         }
     })
 

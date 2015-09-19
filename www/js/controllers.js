@@ -16,26 +16,12 @@ angular.module('starter.controllers', [])
         var password = document.getElementById("passwordSignin").value;
 
         DBUtilities.userSignIn(username, password);
-        // if works - go to
-                $state.go('tab.friends');
-        // else
-        // show popup telling username already exist
-        // $scope.user = DBUtilities.getUserName();
     };
 
 })
 
 
 .controller('FriendsCtrl', function($scope, DBUtilities, $ionicPopup, TeamulateUtilities, $state) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-
-
     $scope.friends = DBUtilities.getFriendsList();
     $scope.doRefresh = function() {
       DBUtilities.populateFriendsList();
@@ -47,7 +33,7 @@ angular.module('starter.controllers', [])
         $scope.friends = DBUtilities.getFriendsList();
     });
     $scope.editPlayer = function(friend) {
-        DBUtilities.editPlayer(friend);
+        $state.go("tab.friends-edit", { "userName": friend.username});
     };
     $scope.teamulate = function(friends) {
       var selectedList = [];
@@ -93,7 +79,23 @@ angular.module('starter.controllers', [])
     };
 })
 
-.controller('AddPlayerCtrl', function($scope, DBUtilities) {
+.controller('EditFriendCtrl', function($scope, $stateParams, DBUtilities, $state) {
+    $scope.friend = $stateParams.userName;
+    $scope.updateRank = function(){
+        var rank = document.getElementById("editPlayerRank").value;
+        console.log("Called addplayerrank with" + $scope.friend + "and " + rank);
+        DBUtilities.addPlayerRank($scope.friend, rank);
+        $state.go('tab.friends');
+    }
+    $scope.removeFriend = function(){
+        $scope.friend = $stateParams.userName;
+        DBUtilities.removeFriendFromFriendList($scope.friend);
+        $state.go('tab.friends');
+
+    }
+
+})
+.controller('AddPlayerCtrl', function($scope, $ionicPopup, DBUtilities) {
   $scope.addPlayer = function() {
     var player = document.getElementById("playerName").value;
     var rank = document.getElementById("playerRank").value;
