@@ -1,6 +1,6 @@
 angular.module('starter.services', [])
 
-.factory('DBUtilities', function($http, $window, $rootScope, $ionicPopup, $state) {
+    .factory('DBUtilities', function($http, $window, $rootScope, $ionicPopup, $state) {
         var userName = getFromLocalStorage('userName', null);
 
         // A set to save all the names of the user friends.
@@ -152,7 +152,7 @@ angular.module('starter.services', [])
         }
     })
 
-.factory('TeamulateUtilities', function() {
+    .factory('TeamulateUtilities', function() {
         var teams = [];
 
         function comparePlayer (player1, player2) {
@@ -193,4 +193,4 @@ angular.module('starter.services', [])
                 return teams;
             }
         };
-});
+    });
