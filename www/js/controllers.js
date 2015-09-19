@@ -43,38 +43,32 @@ angular.module('starter.controllers', [])
             $state.go("tab.friends-edit", { "userName": friend.username});
         };
         $scope.teamulate = function(friends) {
+            // A list conatining the friends the user has chosen
             var selectedList = [];
             angular.forEach(friends, function(friend) {
                 if (friend.isChecked) {
                     selectedList.push(friend);
                 }
             });
-            var numberOfTeams;
-            var numberOfTeamsButtons = [] ;
+
+            // The number of teams the user has selected
+            var numberOfTeams = document.getElementById("numberOfTeams").value;
+
+            // A set containing the possible number of teams this amount of friends can be devised into evenly.
             var numberOfTeamsOptions = new Set([]);
+
+            // Fill numberOfTeamsOptions with the right values
             for (var i = 2; i <= selectedList.length / 2; i++) {
                 if ((selectedList.length % i == 0)) {
-                    numberOfTeamsOptions.add(i);
-                    numberOfTeamsButtons.push({
-                        text: i.toString(),
-                        type: 'button-positive',
-                        onTap: function(e) {
-                            numberOfTeams = parseInt(e.path[0].innerText);
-                        }
-                    });
+                    numberOfTeamsOptions.add(i.toString());
                 };
             }
-            if (numberOfTeamsButtons.length == 0) {
-                var alertPopup = $ionicPopup.alert({
+
+            if (numberOfTeamsOptions.length == 0) {
+                $ionicPopup.alert({
                     title: 'Choose a number of players that can be divided into even teams (4 or more)'
                 });
-            }  else {
-                var NumberOfteamsSelectionPopup = $ionicPopup.show({
-                    title: selectedList.length.toString() + ' players were selected',
-                    subTitle: 'select the number of teams',
-                    buttons: numberOfTeamsButtons
-                });
-                NumberOfteamsSelectionPopup.then(function(res) {
+            }  else if (numberOfTeamsOptions.has(numberOfTeams.toString())) {
                     TeamulateUtilities.teamulate(selectedList, numberOfTeams);
                     var alertPopup = $ionicPopup.alert({
                         title: 'Check out who is against who in the teams tab',
@@ -83,7 +77,13 @@ angular.module('starter.controllers', [])
                     alertPopup.then(function(){
                         $state.go('tab.teams');
                     })
+            } else {
+                $ionicPopup.alert({
+                    title: 'Choose the number of teams that the players can be evenly divided'
                 });
+
+
+
             }
         };
     })

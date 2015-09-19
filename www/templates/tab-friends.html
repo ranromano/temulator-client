@@ -1,24 +1,33 @@
 <ion-view view-title="Friends" ng-controller="FriendsCtrl">
-  <ion-content>
-    <ion-refresher
-            pulling-text="Pull to refresh..."
-            on-refresh="doRefresh()">
-    </ion-refresher>
-    <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right padding" ng-repeat="friend in friends" type="item-text-wrap">
-        <ion-checkbox ng-model="friend.isChecked">
-            <h2> {{friend.username}}</h2>
-            Rank:
-            <br>
-            {{friend.rank}}
-        </ion-checkbox>
-          <ion-option-button class="button-assertive" ng-click="editPlayer(friend)">
-              Edit Player
-          </ion-option-button>
-      </ion-item>
-      <button class="button button-block button-positive" ng-click="teamulate(friends)">
-          Teamulate!
-      </button>
-    </ion-list>
-  </ion-content>
+    <ion-content>
+        <ion-refresher
+                pulling-text="Pull to refresh..."
+                on-refresh="doRefresh()">
+        </ion-refresher>
+        <ion-list>
+            <ion-item class="item-remove-animate item-avatar item-icon-right padding" ng-repeat="friend in friends" type="item-text-wrap">
+                <ion-checkbox ng-model="friend.isChecked">
+                    <h2> {{friend.username}}</h2>
+                    Rank:
+                    <br> {{friend.rank}}
+                </ion-checkbox>
+                <ion-option-button class="button-assertive" ng-click="editPlayer(friend)">
+                    Edit Player
+                </ion-option-button>
+            </ion-item>
+            <div class="row">
+                <div class="col">
+                    Select number of teams : <span>{{data.numberSelection}}</span>
+                    <div class="range range-positive">
+                        2
+                        <input type="range" id="numberOfTeams" name="volume" min="2" max={{friends.length}} value="{{data.numberSelection}}" ng-model="data.numberSelection">
+                        {{friends.length}}
+                    </div>
+                </div>
+                <div class="col">
+                    <button class="button button-block button-positive" ng-click="teamulate(friends)"> Teamulate! </button>
+                </div>
+            </div>
+        </ion-list>
+    </ion-content>
 </ion-view>
