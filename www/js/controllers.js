@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('SigninCtrl', function($scope, DBUtilities, $state) {
+.controller('SigninCtrl', function($scope, DBUtilities, $state, $ionicPopup) {
 
     // Get user name from local storage
     $scope.user = DBUtilities.getUserName();
@@ -14,23 +14,30 @@ angular.module('starter.controllers', [])
     $scope.signin = function() {
         var username = document.getElementById("usernameSignin").value;
         var password = document.getElementById("passwordSignin").value;
+        if (password) {
+            DBUtilities.userSignIn(username, password);
+        } else {
+            $ionicPopup.alert({
+                title: 'Please enter a password'
+            });
+        }
 
-        DBUtilities.userSignIn(username, password);
     };
 
 })
 
 
-.controller('FriendsCtrl', function($scope, DBUtilities, $ionicPopup, TeamulateUtilities, $state) {
+.controller('FriendsCtrl', function($scope, $rootScope, DBUtilities, $ionicPopup, TeamulateUtilities, $state) {
     $scope.friends = DBUtilities.getFriendsList();
+
     $scope.doRefresh = function() {
-      DBUtilities.populateFriendsList();
-      $scope.friends = DBUtilities.getFriendsList();
-      $scope.$broadcast('scroll.refreshComplete');
+          DBUtilities.populateFriendsList();
+          $scope.friends = DBUtilities.getFriendsList();
+          $scope.$broadcast('scroll.refreshComplete');
     };
-    $scope.$on('friendsListUpdated', function () {
-        console.log("Logger: friendsListUpdated");
+    $rootScope.$on('friendsListUpdated', function () {
         $scope.friends = DBUtilities.getFriendsList();
+        console.log("Logger: friends List Updated $scope.$on('friendsListUpdated' is working! ");
     });
     $scope.editPlayer = function(friend) {
         $state.go("tab.friends-edit", { "userName": friend.username});

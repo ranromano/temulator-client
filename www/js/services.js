@@ -3,6 +3,7 @@ angular.module('starter.services', [])
 .factory('DBUtilities', function($http, $window, $rootScope, $ionicPopup, $state) {
         var userName = getFromLocalStorage('userName', null);
 
+        // A set to save all the names of the user friends.
         var friendsNames = new Set([]);
 
         // Local storage functions
@@ -25,10 +26,39 @@ angular.module('starter.services', [])
         function setUserName(name) {
             setInLocalStorage('userName', name);
             userName = name;
+            friendsNames.clear();
         }
 
         function getUserName() {
             return getFromLocalStorage('userName', null);
+        }
+
+        function setFriendsList(list) {
+            friendsNames.clear();
+            for (item in list) {
+                friendsNames.add(list[item].username);
+            };
+            setObjectInLocalStorage('friendsList', list);
+            $rootScope.$broadcast('friendsListUpdated');
+        }
+
+        function getFriendsList() {
+            return getObjectFromLocalStorage('friendsList');
+        }
+
+        function userSignIn(user, password) {
+            $http.post('http://teamulator.herokuapp.com/signup/', {username: user, password: password}).
+                then(function (response) {
+                    console.log("Logger: ", user, "added to DB");
+                    setUserName(user);
+                    updateFriendsList();
+                    $state.go('tab.friends');
+                }, function (response) {
+                    console.log("ERROR: Could not add", user, "to DB");
+                    $ionicPopup.alert({
+                        title: 'Username already exist, please choose another one'
+                    });
+                });
         }
 
         // Retrieve an updated version of the user friends list from the server.
@@ -43,10 +73,11 @@ angular.module('starter.services', [])
                 });
         }
 
-        function updateRank(user, rank) {
+        function updateRank(user, rank, callback) {
             $http.put('http://teamulator.herokuapp.com/users/' + user, {rank: rank}).
                 then(function (response) {
                     console.log("Logger: updated", user, " rank");
+                    callback();
                 }, function (response) {
                     console.log("ERROR: Could not update", user, " rank");
                 });
@@ -68,9 +99,11 @@ angular.module('starter.services', [])
                             title: 'User added!'
                         });
                         if (rank) {
-                            updateRank(friendName, rank);
+                            updateRank(friendName, rank, updateFriendsList);
+                        } else {
+                            updateFriendsList();
                         }
-                        updateFriendsList();
+
                     }, function (response) {
                         console.log("ERROR: Could not add", friendName, "to " + userName + "'s friends list");
                         $ionicPopup.alert({
@@ -96,41 +129,6 @@ angular.module('starter.services', [])
                     });
                 });
         }
-
-
-        function setFriendsList(list) {
-            friendsNames.clear();
-            for (item in list) {
-                friendsNames.add(list[item].username);
-            };
-            setObjectInLocalStorage('friendsList', list);
-            $rootScope.$broadcast('friendsListUpdated');
-        }
-
-        function getFriendsList() {
-            return getObjectFromLocalStorage('friendsList');
-        }
-
-        function userSignIn(user, password) {
-            if (!password) {
-                $ionicPopup.alert({
-                    title: 'Please enter a password'
-                });
-            }
-            $http.post('http://teamulator.herokuapp.com/signup/', {username: user, password: password}).
-                then(function (response) {
-                    console.log("Logger: ", user, "added to DB");
-                    setUserName(user);
-                    updateFriendsList();
-                    $state.go('tab.friends');
-                }, function (response) {
-                    console.log("ERROR: Could not add", user, "to DB");
-                    $ionicPopup.alert({
-                        title: 'Username already exist, please choose another one'
-                    });
-                });
-        }
-
         return {
             setUserName: setUserName,
             getUserName: getUserName,
@@ -145,7 +143,7 @@ angular.module('starter.services', [])
             populateFriendsList: updateFriendsList,
             addFriend: addFriend,
             addPlayerRank: function(user, rank) {
-                updateRank(user, rank);
+                updateRank(user, rank, updateFriendsList);
             },
             editPlayer: function (playerName) {
             },
