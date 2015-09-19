@@ -113,9 +113,14 @@ angular.module('starter.services', [])
             }
         }
 
-        function removeFriendFromFriendList(friendName){
-            $http.delete('http://teamulator.herokuapp.com/users/' + userName + '/friends', {friend: friendName}).
-                then(function (response) {
+        function removeFriendFromFriendList(friendName) {
+            var req = {
+                method  : 'DELETE',
+                url     : 'http://teamulator.herokuapp.com/users/' + userName + '/friends',
+                data    : { friend  : friendName }
+            };
+            $http(req)
+                .then(function (response) {
                     console.log("Logger: ", friendName, "removed from " + userName + "'s friends list");
                     $ionicPopup.alert({
                         title: 'User removed'
@@ -123,9 +128,9 @@ angular.module('starter.services', [])
                     friendsNames.delete(friendName);
                     updateFriendsList();
                 }, function (response) {
-                    console.log("ERROR: Could not add", friendName, "to " + userName + "'s friends list");
+                    console.log("ERROR: Could not remove", friendName, "to " + userName + "'s friends list");
                     $ionicPopup.alert({
-                        title: 'Error: User was not added, something went wrong :('
+                        title: 'Error: User was not removed, something went wrong :('
                     });
                 });
         }
